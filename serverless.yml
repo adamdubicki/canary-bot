@@ -1,7 +1,7 @@
 service:
   name: canary-bot
 
-custom: ${file(./config.yml)}
+custom: ${file(./secrets.yml)}
 
 plugins:
   - serverless-webpack
@@ -10,87 +10,20 @@ plugins:
 provider:
   name: aws
   runtime: nodejs8.10
-  iamRoleStatements:
-  - Effect: Allow
-    Action:
-      - dynamodb:DescribeTable
-      - dynamodb:Query
-      - dynamodb:Scan
-      - dynamodb:GetItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
-      - dynamodb:DeleteItem
-    Resource: "arn:aws:dynamodb:us-west-1:*:*"
   environment:
-    TABLE_NAME: ${self:custom.slack_table_name}
-    CLIENT_ID: ${self:custom.slack_client_id}
-    CLIENT_SECRET: ${self:custom.slack_client_secret}
-    CLIENT_SCOPES: ${self:custom.slack_client_scopes}
-    INSTALL_REDIRECT: ${self:custom.slack_install_redirect}
-    VERIFICATION_TOKEN: ${self:custom.slack_verification_token}
-    ENABLE_LOGGING: ${self:custom.slack_enable_logging}
     BUCKET: ${self:custom.bucket}
     STAGE_URL: ${self:custom.stage-url}
     RECORD_KEY: ${self:custom.record-key}
+    SLACK_HOOK: ${self:custom.slack-hook}
 
 functions:
   updateBuildRecord:
     handler: src/handler.updateBuildRecord
     events:
-      - http:
-          method: get
-          path: updateBuildRecord
+      - schedule: rate(1 minute)
   getCurrentBuildRecord:
     handler: src/handler.getCurrentBuildRecord
     events:
       - http:
           method: get
           path: currentBuildRecord
-  slack:
-    handler: src/index.handler
-    events:
-      ## Slash Commands, Events, and Interactive Messages
-      - http:
-          path: ${self:custom.slack_event_path}
-          method: post
-          integration: lambda
-          response:
-            template: $input.path('$')
-      
-      ## OAuth Routes      
-      - http:
-          path: ${self:custom.slack_install_path}
-          method: get
-          integration: lambda
-          request:
-            parameters:
-              querystrings:
-                code: true
-                state: true
-          response:
-            statusCodes:
-              201:
-                pattern: ''
-              301:
-                pattern: http.*
-                headers:
-                  Location: integration.response.body.errorMessage
-                  Cache-Control: "'no-cache, no-store, must-revalidate'"      
-resources:
-  Resources:
-    TeamsDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:custom.slack_table_name}
