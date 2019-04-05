@@ -16,12 +16,19 @@ provider:
     STAGE_URL: ${self:custom.stage-url}
     RECORD_KEY: ${self:custom.record-key}
     SLACK_HOOK: ${self:custom.slack-hook}
+  region: us-west-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+
 
 functions:
   updateBuildRecordSchedule:
     handler: src/handler.updateBuildRecord
     events:
-      - schedule: cron(* * * * * *)
+      - schedule: cron(0/1 * * * ? *)
   getCurrentBuildRecord:
     handler: src/handler.getCurrentBuildRecord
     events:
