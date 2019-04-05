@@ -1,6 +1,6 @@
 {
   "ignore": [".git", "node_modules"],
   "watch": ["src"],
-  "exec": "sls offline start --port 8080",
+  "exec": "sls offline start --port 8080 --location .webpack/service",
   "ext": "ts"
 }

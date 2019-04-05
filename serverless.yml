@@ -6,6 +6,7 @@ custom: ${file(./secrets.yml)}
 plugins:
   - serverless-webpack
   - serverless-offline
+  - serverless-offline-scheduler
 
 provider:
   name: aws
@@ -17,10 +18,10 @@ provider:
     SLACK_HOOK: ${self:custom.slack-hook}
 
 functions:
-  updateBuildRecord:
+  updateBuildRecordSchedule:
     handler: src/handler.updateBuildRecord
     events:
-      - schedule: rate(1 minute)
+      - schedule: cron(* * * * * *)
   getCurrentBuildRecord:
     handler: src/handler.getCurrentBuildRecord
     events:
