@@ -23,7 +23,6 @@ provider:
         - s3:*
       Resource: "*"
 
-
 functions:
   updateBuildRecordSchedule:
     handler: src/handler.updateBuildRecord

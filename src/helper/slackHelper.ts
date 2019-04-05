@@ -10,4 +10,4 @@ export const sendMessage = (text: String) => {
   });
 }
 
-export const formatBuildMessage = ({buildId}) => `New build ${buildId} on stage detected.`
+export const formatBuildMessage = ({buildId}) => `New build ${buildId} on stage.`

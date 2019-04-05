@@ -7,15 +7,10 @@ import { sendMessage, formatBuildMessage } from './helper/slackHelper';
 
 export const updateBuildRecord: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
   try {
-    console.log('start');
     const { buildId: nextBuildId } = Object(await axios.get(process.env.STAGE_URL)).data;
-    console.log(`got object from staging url`);
     const { buildId, timestamp } =  Object(await getBuildRecordFromS3());
-    console.log(`got object from s3`);
 
     if(nextBuildId === buildId) {
-      sendMessage(formatBuildMessage({buildId}));
-      console.log(`sent slack message`);
       return lambdaResponse(200, {});
     }
 
