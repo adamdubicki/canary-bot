@@ -16,6 +16,8 @@ provider:
     STAGE_URL: ${self:custom.stage-url}
     RECORD_KEY: ${self:custom.record-key}
     SLACK_HOOK: ${self:custom.slack-hook}
+    GS_CLIENT_ID: ${self:custom.google-sheets-client-id}
+    GS_CLIENT_SECRET: ${self:custom.google-sheets-client-secret}
   region: us-west-2
   iamRoleStatements:
     - Effect: Allow
