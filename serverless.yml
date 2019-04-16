@@ -1,10 +1,13 @@
 service:
   name: canary-bot
+
 custom: ${file(./secrets-${opt:stage}.yml)}
+
 plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-offline-scheduler
+
 provider:
   name: aws
   runtime: nodejs8.10
@@ -20,6 +23,7 @@ provider:
       Action:
         - s3:*
       Resource: "*"
+
 functions:
   updateBuildRecord:
     handler: src/handler.updateBuildRecord
@@ -29,6 +33,7 @@ functions:
       BUCKET: ${self:custom.bucket}
       RECORD_KEY: ${self:custom.record-key}
       URL: ${self:custom.url}
+
   getBuildRecord:
     handler: src/handler.getBuildRecord
     events:
@@ -38,6 +43,7 @@ functions:
     environment:
       BUCKET: ${self:custom.bucket}
       RECORD_KEY: ${self:custom.record-key}
+
   startPerformanceTest:
     handler: src/handler.startPerformanceTest
     events:
@@ -46,3 +52,10 @@ functions:
           path: performance/start
     environment:
       URL: https://nodeca.${opt:stage}.aplaceformom.com/en/assisted-living/british-columbia/vancouver
+
+  updatePerformanceTest:
+    handler: src/handler.updatePerformanceResults
+    events:
+      - http:
+          method: get
+          path: performance/update

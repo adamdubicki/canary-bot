@@ -11,3 +11,5 @@ export const sendMessage = (text: String) => {
 }
 
 export const formatBuildMessage = ({buildId, stage}) => `New build ${buildId} on ${stage}.`
+export const formatPerformanceResults = ({ url, score, loadTime, date }) =>
+  `${date}: ${url}\nLoad time: ${loadTime/1000}s.\n_________________\nScore: ${score}`
