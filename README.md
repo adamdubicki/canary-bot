@@ -18,5 +18,11 @@ serverless config credentials --provider aws --key YOUR_ACCESS_KEY --secret YOUR
 
 ```npm install```
 
-## Running dev
+
+## Running locally
 ```npm run dev```
+You will need a secrets-local.yml to hold the environment variables for the environment. Base it off the example environment variables.
+
+## Deploying 
+```npm run deploy:<stage you want to deploy>```
+You will need a secrets-#stage.yml to hold the environment variables for the environment.
