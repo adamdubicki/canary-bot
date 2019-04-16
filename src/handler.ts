@@ -58,6 +58,6 @@ export const startPerformanceTest: Handler = async (event: APIGatewayEvent, cont
   }
 }
 
-export const getPerformanceResults: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
-  
+export const updatePerformanceResults: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
+
 }
