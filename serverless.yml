@@ -1,21 +1,18 @@
 service:
   name: canary-bot
-
-custom: ${file(./secrets.yml)}
-
+custom: ${file(./secrets-${opt:stage}.yml)}
 plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-offline-scheduler
-
 provider:
   name: aws
   runtime: nodejs8.10
+  stage: ${opt:stage}
   environment:
     BUCKET: ${self:custom.bucket}
-    STAGE_URL: ${self:custom.stage-url}
-    RECORD_KEY: ${self:custom.record-key}
     SLACK_HOOK: ${self:custom.slack-hook}
+    STAGE: ${opt:stage}
   region: us-west-2
   iamRoleStatements:
     - Effect: Allow
@@ -24,13 +21,21 @@ provider:
       Resource: "*"
 
 functions:
-  updateBuildRecordSchedule:
+  updateBuildRecord:
     handler: src/handler.updateBuildRecord
     events:
       - schedule: cron(0/1 * * * ? *)
-  getCurrentBuildRecord:
-    handler: src/handler.getCurrentBuildRecord
+    environment:
+      BUCKET: ${self:custom.bucket}
+      RECORD_KEY: ${self:custom.record-key}
+      URL: ${self:custom.url}
+
+  getBuildRecord:
+    handler: src/handler.getBuildRecord
     events:
       - http:
           method: get
-          path: currentBuildRecord
+          path: buildRecord
+    environment:
+      BUCKET: ${self:custom.bucket}
+      RECORD_KEY: ${self:custom.record-key}
