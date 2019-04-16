@@ -1,10 +1,13 @@
 service:
   name: canary-bot
+
 custom: ${file(./secrets-${opt:stage}.yml)}
+
 plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-offline-scheduler
+
 provider:
   name: aws
   runtime: nodejs8.10
@@ -12,6 +15,7 @@ provider:
   environment:
     BUCKET: ${self:custom.bucket}
     SLACK_HOOK: ${self:custom.slack-hook}
+    SHEET_ID: ${self:custom.sheet-id}
     STAGE: ${opt:stage}
   region: us-west-2
   iamRoleStatements:
@@ -39,3 +43,19 @@ functions:
     environment:
       BUCKET: ${self:custom.bucket}
       RECORD_KEY: ${self:custom.record-key}
+
+  startPerformanceTest:
+    handler: src/handler.startPerformanceTest
+    events:
+      - http:
+          method: get
+          path: performance/start
+    environment:
+      URL: https://nodeca.${opt:stage}.aplaceformom.com/en/assisted-living/british-columbia/vancouver
+
+  updatePerformanceTest:
+    handler: src/handler.updatePerformanceResults
+    events:
+      - http:
+          method: get
+          path: performance/update
