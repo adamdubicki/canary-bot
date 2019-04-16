@@ -33,4 +33,11 @@ functions:
     events:
       - http:
           method: get
-          path: currentBuildRecord
+          path: buildRecord
+  startPerformanceTest:
+    handler: src/handler.startPerformanceTest
+    events:
+      - http:
+          method: get
+          path: performance/start
+  

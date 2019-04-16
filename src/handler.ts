@@ -30,3 +30,24 @@ export const getCurrentBuildRecord: Handler = async (event: APIGatewayEvent, con
     return lambdaResponse(400, { message: e });
   }
 }
+
+export const startPerformanceTest: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
+  try {
+    const { data } = await axios({
+      method: 'post',
+      url: 'https://yellowlab.tools/api/runs',
+      data: {
+        url: 'https://nodeca.stage.aplaceformom.com/en',
+        device: 'desktop',
+        screenshot: true,
+        waitForResponse: false,
+      },
+      headers: {
+        contentType: 'application/json'
+      }
+    });
+    return lambdaResponse(200, {})
+  } catch(e) {
+    return lambdaResponse(400, { message: e });
+  }
+}
