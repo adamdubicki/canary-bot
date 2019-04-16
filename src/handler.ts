@@ -14,7 +14,7 @@ export const updateBuildRecord: Handler = async (event: APIGatewayEvent, context
       return lambdaResponse(200, {});
     }
 
-    sendMessage(formatBuildMessage({buildId}));
+    sendMessage(formatBuildMessage({buildId: nextBuildId}));
     saveBuildRecordToS3({ buildId: nextBuildId, timestamp: Number(new Date()) });
     return lambdaResponse(200, { buildId, timestamp });
   } catch(e) {
