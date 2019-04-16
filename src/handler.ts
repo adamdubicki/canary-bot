@@ -10,25 +10,27 @@ const sheets = new SheetsAPI();
 
 export const updateBuildRecord: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
   try {
-    const { buildId: nextBuildId } = Object(await axios.get(process.env.STAGE_URL)).data;
-    const { buildId, timestamp } =  Object(await getBuildRecordFromS3());
+    const { BUCKET: bucket, RECORD_KEY: key, URL, STAGE} = process.env;
+    const { buildId: nextBuildId } = Object(await axios.get(URL)).data;
+    const { buildId, timestamp } =  Object(await getBuildRecordFromS3(bucket, key));
 
     if(nextBuildId === buildId) {
       return lambdaResponse(200, {});
     }
 
-    sendMessage(formatBuildMessage({buildId: nextBuildId}));
-    saveBuildRecordToS3({ buildId: nextBuildId, timestamp: Number(new Date()) });
+    sendMessage(formatBuildMessage({buildId: nextBuildId, stage: STAGE}));
+    saveBuildRecordToS3(bucket, key, { buildId: nextBuildId, timestamp: Number(new Date()) });
     return lambdaResponse(200, { buildId, timestamp });
   } catch(e) {
     return lambdaResponse(400, { message: e });
   }
 }
 
-export const getCurrentBuildRecord: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
+export const getBuildRecord: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
   try {
-    const { buildId, timestamp } = Object(await getBuildRecordFromS3());
-    return lambdaResponse(200, { buildId, timestamp });
+    const { BUCKET: bucket, RECORD_KEY: key} = process.env;
+    const { buildId, timestamp } = Object(await getBuildRecordFromS3(bucket, key));
+    return lambdaResponse(200, { buildId, timestamp, key});
   } catch(e) {
     return lambdaResponse(400, { message: e });
   }

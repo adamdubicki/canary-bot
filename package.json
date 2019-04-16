@@ -4,7 +4,9 @@
   "description": "Serverless webpack example using Typescript",
   "main": "handler.js",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "deploy:stage": "sls deploy --stage stage",
+    "deploy:prod": "sls deploy --stage prod"
   },
   "dependencies": {
     "@slack/client": "^5.0.0",
