@@ -4,9 +4,8 @@ import { APIGatewayEvent, Callback, Context, Handler } from 'aws-lambda';
 import { getBuildRecordFromS3, saveBuildRecordToS3 } from './helper/s3Helper';
 import { lambdaResponse } from './helper/handlerHelper';
 import { sendMessage, formatBuildMessage } from './helper/slackHelper';
-import SheetsAPI from 'sheets-api';
-
-const sheets = new SheetsAPI();
+import { startRun } from './helper/yellowLabHelper';
+import { appendRow } from './helper/googleSheetsHelper';
 
 export const updateBuildRecord: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
   try {
@@ -38,36 +37,27 @@ export const getBuildRecord: Handler = async (event: APIGatewayEvent, context: C
 
 export const startPerformanceTest: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
   try {
-    let payload = {
-      spreadsheetId: '1dlFsm2Mdi0-bLPEjfcfDwZc7NRgJScHg7unJl4NxKoo',
-      range: "Orders!A1:D1",
-      valueInputOption: 'USER_ENTERED',
-      resource : {
-        majorDimension: "ROWS",
-        values: [
-          ["Door", "$15", "2", "3/15/2017"],
-          ["Engine", "$100", "1", "3/20/2016"]
-        ]
-      }
-    }
-    sheets
-      .authorize()
-      .then(auth => sheets.values('append', auth, payload))
-    // const { data } = await axios({
-    //   method: 'post',
-    //   url: 'https://yellowlab.tools/api/runs',
-    //   data: {
-    //     url: 'https://nodeca.stage.aplaceformom.com/en',
-    //     device: 'desktop',
-    //     screenshot: true,
-    //     waitForResponse: false,
-    //   },
-    //   headers: {
-    //     contentType: 'application/json'
-    //   }
-    // });
-    return lambdaResponse(200, {})
+    const { URL: url } = process.env;
+    const { runId } = await startRun({
+      url,
+      device: 'desktop',
+      screenshot: true,
+      waitForResponse: false
+    });
+    
+    appendRow({ 
+      runId,
+      url,
+      resultsUrl: `https://yellowlab.tools/api/results/${runId}`,
+      screenshotUrl: `https://yellowlab.tools/api/results/${runId}/screenshot.jpg`
+    });
+
+    return lambdaResponse(200, { url, runId })
   } catch(e) {
     return lambdaResponse(400, { message: e });
   }
+}
+
+export const getPerformanceResults: Handler = async (event: APIGatewayEvent, context: Context, cb: Callback) => {
+  
 }

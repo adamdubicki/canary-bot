@@ -12,8 +12,8 @@
     "@slack/client": "^5.0.0",
     "aws-sdk": "2.436.0",
     "axios": "0.18.0",
+    "google-spreadsheet": "^2.0.3",
     "nodemon": "1.18.10",
-    "sheets-api": "^1.0.8",
     "source-map-support": "0.5.0"
   },
   "devDependencies": {

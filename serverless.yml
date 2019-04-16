@@ -12,8 +12,7 @@ provider:
   environment:
     BUCKET: ${self:custom.bucket}
     SLACK_HOOK: ${self:custom.slack-hook}
-    GS_CLIENT_ID: ${self:custom.google-sheets-client-id}
-    GS_CLIENT_SECRET: ${self:custom.google-sheets-client-secret}
+    SHEET_ID: ${self:custom.sheet-id}
     STAGE: ${opt:stage}
   region: us-west-2
   iamRoleStatements:
@@ -21,7 +20,6 @@ provider:
       Action:
         - s3:*
       Resource: "*"
-
 functions:
   updateBuildRecord:
     handler: src/handler.updateBuildRecord
@@ -31,7 +29,6 @@ functions:
       BUCKET: ${self:custom.bucket}
       RECORD_KEY: ${self:custom.record-key}
       URL: ${self:custom.url}
-
   getBuildRecord:
     handler: src/handler.getBuildRecord
     events:
@@ -41,11 +38,11 @@ functions:
     environment:
       BUCKET: ${self:custom.bucket}
       RECORD_KEY: ${self:custom.record-key}
-      
   startPerformanceTest:
     handler: src/handler.startPerformanceTest
     events:
       - http:
           method: get
           path: performance/start
-  
+    environment:
+      URL: https://nodeca.${opt:stage}.aplaceformom.com/en/assisted-living/british-columbia/vancouver
