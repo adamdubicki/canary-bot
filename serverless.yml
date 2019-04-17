@@ -47,15 +47,11 @@ functions:
   startPerformanceTest:
     handler: src/handler.startPerformanceTest
     events:
-      - http:
-          method: get
-          path: performance/start
+      - schedule: cron(5 4 * * ? *)
     environment:
       URL: https://nodeca.${opt:stage}.aplaceformom.com/en/assisted-living/british-columbia/vancouver
 
   updatePerformanceTest:
     handler: src/handler.updatePerformanceResults
     events:
-      - http:
-          method: get
-          path: performance/update
+      - schedule: cron(0/5 * * * ? *)
