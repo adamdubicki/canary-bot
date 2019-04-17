@@ -63,9 +63,11 @@ export const updatePerformanceResults: Handler = async (event: APIGatewayEvent, 
     const row = Object(await findRowWithoutResults());
     if (!row) return lambdaResponse(200, { message: "No rows to update." });
 
+    console.log('Found a row...');
     const { data } = await axios.get(row.resultsurl);
     if(!data.scoreProfiles) return lambdaResponse(200, { message: "No rows to update." });
 
+    console.log('Found a valid score...');
     const score = data.scoreProfiles.generic.globalScore;
     const loadTime = data.javascriptExecutionTree.children.slice(-1)[0].data.timestamp;
 
