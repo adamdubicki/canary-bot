@@ -43,8 +43,8 @@ export const startPerformanceTest: Handler = async (event: APIGatewayEvent, cont
       screenshot: true,
       waitForResponse: false
     });
-    
-    appendRow({ 
+
+    await appendRow({ 
       runId,
       url,
       resultsUrl: `https://yellowlab.tools/api/results/${runId}`,
@@ -52,8 +52,11 @@ export const startPerformanceTest: Handler = async (event: APIGatewayEvent, cont
       date: new Date().toLocaleDateString("en-US")
     });
 
+    console.log(`Got run id ${runId}`);
+
     return lambdaResponse(200, { url, runId })
   } catch(e) {
+    console.error(e);
     return lambdaResponse(400, { message: e });
   }
 }

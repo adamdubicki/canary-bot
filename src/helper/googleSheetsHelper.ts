@@ -10,7 +10,15 @@ const instantiateDoc: GoogleSpreadsheet = async (id: string) => {
 export const appendRow = async (data) => {
   try {
     const doc = await instantiateDoc(process.env.SHEET_ID);
-    await doc.addRow(1, data, (err) => { if (err) console.error(err) });
+    await new Promise((resolve, reject) => {
+      doc.addRow(1, data, (err) => { 
+        if (err) {
+          console.error(err);
+          reject(err);
+        }
+        resolve();
+      });
+    });
   } catch(e) {
     console.error(`Error appending row ${e}`);
     return;
