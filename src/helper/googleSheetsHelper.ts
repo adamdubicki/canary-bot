@@ -1,7 +1,7 @@
 import GoogleSpreadsheet from 'google-spreadsheet';
 import creds from '../../canary-creds.js';
 
-const instantiateDoc: GoogleSpreadsheet = async (id: string) => {
+export const instantiateDoc: GoogleSpreadsheet = async (id: string) => {
   const doc = new GoogleSpreadsheet(id);
   await authenticate(doc);
   return doc;

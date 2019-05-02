@@ -51,7 +51,22 @@ functions:
     environment:
       URL: https://nodeca.${opt:stage}.aplaceformom.com/en/assisted-living/british-columbia/vancouver
 
-  updatePerformanceTest:
-    handler: src/handler.updatePerformanceResults
+  getReport:
+    handler: src/handler.getReport
     events:
-      - schedule: cron(0/5 * * * ? *)
+      - http:
+          method: get
+          path: report
+          private: false
+    environment:
+      ENV: ${opt:stage}
+
+  sendReport:
+    handler: src/handler.sendReport
+    events:
+      - schedule: cron(5 4 * * ? *)
+    environment:
+      URL: { "Fn::Join" : ["", [" https://", { "Ref" : "ApiGatewayRestApi" }, ".execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}" ] ]  }
+    
+  
+  
