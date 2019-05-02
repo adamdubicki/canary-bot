@@ -55,3 +55,23 @@ functions:
     handler: src/handler.updatePerformanceResults
     events:
       - schedule: cron(0/5 * * * ? *)
+
+  getReport:
+    handler: src/handler.getReport
+    events:
+      - http:
+          method: get
+          path: report
+          private: false
+    environment:
+      ENV: ${opt:stage}
+
+  sendReport:
+    handler: src/handler.sendReport
+    events:
+      - schedule: cron(5 4 * * ? *)
+    environment:
+      URL: { "Fn::Join" : ["", [" https://", { "Ref" : "ApiGatewayRestApi" }, ".execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}" ] ]  }
+    
+  
+  
