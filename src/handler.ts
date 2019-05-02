@@ -78,13 +78,6 @@ export const updatePerformanceResults: Handler = async (event: APIGatewayEvent, 
     row.loadtime = loadTime;
     row.save();
 
-    sendMessage(formatPerformanceResults({
-      score,
-      loadTime,
-      date: row.date,
-      url: row.url
-    }));
-
     return lambdaResponse(200, { score })
   } catch(e) {
     return lambdaResponse(400, { message: e });
@@ -177,8 +170,8 @@ export const getReport: Handler = async (event: APIGatewayEvent, context: Contex
                   display: true,
                   stacked: true,
                   ticks: {
-                      min: 0, // minimum value
-                      max: 6000 // maximum value
+                      min: 1000, // minimum value
+                      max: 4000 // maximum value
                   }
                 }]
               }
