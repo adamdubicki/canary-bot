@@ -51,6 +51,11 @@ functions:
     environment:
       URL: https://nodeca.${opt:stage}.aplaceformom.com/en/assisted-living/british-columbia/vancouver
 
+  updatePerformanceTest:
+    handler: src/handler.updatePerformanceResults
+    events:
+      - schedule: cron(0/5 * * * ? *)
+
   getReport:
     handler: src/handler.getReport
     events:
