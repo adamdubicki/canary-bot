@@ -49,7 +49,7 @@ functions:
     events:
       - schedule: cron(5 4 * * ? *)
     environment:
-      URL: https://nodeca.${opt:stage}.aplaceformom.com/en/assisted-living/british-columbia/vancouver
+      URL: https://nodeca.${opt:stage}.aplaceformom.com/ca/en/assisted-living/british-columbia/vancouver
 
   updatePerformanceTest:
     handler: src/handler.updatePerformanceResults
