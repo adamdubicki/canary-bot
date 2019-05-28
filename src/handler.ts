@@ -110,6 +110,8 @@ export const getReport: Handler = async (event: APIGatewayEvent, context: Contex
     borderColor: color,
     data: `[${(reportData as any).map((report) => report.loadtime)}]`
   }
+  const loadTimeMax = Math.max(...(reportData as any).map((report) => report.loadtime));
+
   const scoreColumnData = {
     label: reportData[0].url,
     backgroundColor: color,
@@ -171,7 +173,7 @@ export const getReport: Handler = async (event: APIGatewayEvent, context: Contex
                   stacked: true,
                   ticks: {
                       min: 1000, // minimum value
-                      max: 4000 // maximum value
+                      max: ${loadTimeMax} // maximum value
                   }
                 }]
               }
